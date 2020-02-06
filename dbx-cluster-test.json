@@ -1,0 +1,26 @@
+{
+    "num_workers": 1,
+    "cluster_name": "demo (clone) (clone)",
+    "spark_version": "latest-stable-scala2.11",
+    "spark_conf": {
+        "spark.databricks.cluster.profile": "serverless",
+        "spark.databricks.passthrough.enabled": "true",
+        "spark.databricks.delta.preview.enabled": "true",
+        "spark.databricks.pyspark.enableProcessIsolation": "true",
+        "spark.databricks.repl.allowedLanguages": "python,sql"
+    },
+    "node_type_id": "Standard_D3_v2",
+    "driver_node_type_id": "Standard_D3_v2",
+    "ssh_public_keys": [],
+    "custom_tags": {
+        "ResourceClass": "Serverless"
+    },
+    "spark_env_vars": {
+        "PYSPARK_PYTHON": "/databricks/python3/bin/python3"
+    },
+    "autotermination_minutes": 60,
+    "enable_elastic_disk": true,
+    "cluster_source": "UI",
+    "init_scripts": [],
+    "cluster_id": "0205-230618-allay140"
+}
