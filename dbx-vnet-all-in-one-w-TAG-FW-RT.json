@@ -84,6 +84,13 @@
           "description": "Cidr range for the firewall subnet.."
         }
       },
+      "storageSubnetCidr": {
+        "defaultValue": "10.179.129.0/29",
+        "type": "string",
+        "metadata": {
+          "description": "Cidr range for the storage subnet.."
+        }
+      },      
     "resourceTags": {
       "type": "object",
       "defaultValue": {
@@ -92,7 +99,7 @@
       }
     },
     "route-name": {
-        "defaultValue": "dbx-pub-rt",
+        "defaultValue": "dbx-route",
         "type": "string"
     }
   },
@@ -163,7 +170,14 @@
             "properties": {
               "addressPrefix": "[parameters('firewallSubnetCidr')]"                           
             }
+          },
+          {
+            "name": "storage-subnet",
+            "properties": {
+              "addressPrefix": "[parameters('storageSubnetCidr')]"                           
+            }
           }
+          
         ]
       }
     },
