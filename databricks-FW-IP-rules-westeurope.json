@@ -1,0 +1,245 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "azureFirewalls_fw_name": {
+            "defaultValue": "fw",
+            "type": "String",
+             "metadata": {
+                "description": "The name of Firewall to create."
+            }
+        },
+        "publicIPAddresses_fw_ip_name": {
+            "defaultValue": "fw-ip",
+            "type": "String",
+             "metadata": {
+                "description": "The name of firewall ip name."
+            }
+        },
+        "vnetName": {
+            "defaultValue": "databricks-vnet",
+            "type": "string",
+            "metadata": {
+                "description": "The name of existing virtual network of Databricks."
+            }
+        }
+       
+    },
+    "variables": {
+        "fwPubIPId": "[resourceId(resourceGroup().name,'Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_fw_ip_name'))]",
+        "virtualNetworks_databricks_vnet_externalid": "[resourceId(resourceGroup().name,'Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2019-11-01",
+            "name": "[parameters('publicIPAddresses_fw_ip_name')]",
+            "location": "westeurope",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "ipAddress": "52.149.106.156",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/azureFirewalls",
+            "apiVersion": "2019-11-01",
+            "name": "[parameters('azureFirewalls_fw_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddresses_fw_ip_name'))]"
+            ],
+            "properties": {
+                "sku": {
+                    "name": "AZFW_VNet",
+                    "tier": "Standard"
+                },
+                "threatIntelMode": "Alert",
+                "additionalProperties": {},
+                "ipConfigurations": [
+                    {
+                        "name": "[concat(parameters('azureFirewalls_fw_name'), '-ip')]",
+                        "properties": {
+                            "publicIPAddress": {
+                                "id": "[variables('fwPubIPId')]"
+                            },
+                            "subnet": {
+                                "id": "[concat(variables('virtualNetworks_databricks_vnet_externalid'), '/subnets/AzureFirewallSubnet')]"
+                            }
+                        }
+                    }
+                ],
+                "networkRuleCollections": [
+                    {
+                        "name": "webapp",
+                        "properties": {
+                            "priority": 100,
+                            "action": {
+                                "type": "Allow"
+                            },
+                            "rules": [
+                                {
+                                    "name": "web",
+                                    "protocols": [
+                                        "TCP"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "destinationAddresses": [
+                                        "52.232.19.246/32"
+                                    ],
+                                    "sourceIpGroups": [],
+                                    "destinationIpGroups": [],
+                                    "destinationFqdns": [],
+                                    "destinationPorts": [
+                                        "443"
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "applicationRuleCollections": [
+                    {
+                        "name": "minimum",
+                        "properties": {
+                            "priority": 100,
+                            "action": {
+                                "type": "Allow"
+                            },
+                            "rules": [
+                                {
+                                    "name": "meta",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "consolidated-westeurope-prod-metastore.mysql.database.azure.com"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                },
+                                {
+                                    "name": "meta2",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "consolidated-westeurope-prod-metastore-addl-1.mysql.database.azure.com"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                },
+                                {
+                                    "name": "Artifact Blob storage primary",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "dbartifactsprodwesteu.blob.core.windows.net"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                },
+                                {
+                                    "name": "Artifact Blob storage secondary",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "dbartifactsprodnortheu.blob.core.windows.net"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                },
+                                {
+                                    "name": "Log Blob storage",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "dblogprodwesteurope.blob.core.windows.net"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                },
+                                {
+                                    "name": "Event Hub endpoint",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "prod-westeurope-observabilityeventhubs.servicebus.windows.net"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                },
+                                {
+                                    "name": "dbfs",
+                                    "protocols": [
+                                        {
+                                            "protocolType": "Https",
+                                            "port": 443
+                                        }
+                                    ],
+                                    "fqdnTags": [],
+                                    "targetFqdns": [
+                                        "xxx.blob.core.windows.net"
+                                    ],
+                                    "sourceAddresses": [
+                                        "10.179.0.0/17"
+                                    ],
+                                    "sourceIpGroups": []
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "natRuleCollections": []
+            }
+        }
+    ]
+}
