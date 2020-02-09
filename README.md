@@ -2,6 +2,8 @@
 
 Tailored to West Europe Azure region.
 
+> Note: currently templates are deployed through portal (create own deployment template)
+
 ## Steps
 
 1. deploy Databricks inside VNET 
