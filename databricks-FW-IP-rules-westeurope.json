@@ -24,7 +24,7 @@
             }
         }
        ,"databricksManagedStorageName": {
-            "defaultValue": "xxx",
+            "defaultValue": "TO-BE-FILLED",
             "type": "string",
             "metadata": {
                 "description": "The name of Databricks' managed storage - created with previous template."

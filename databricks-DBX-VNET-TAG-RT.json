@@ -78,7 +78,7 @@
       }
     },
     "firewallSubnetCidr": {
-        "defaultValue": "10.179.128.0/29",
+        "defaultValue": "10.179.128.0/26",
         "type": "string",
         "metadata": {
           "description": "Cidr range for the firewall subnet.."
