@@ -78,14 +78,14 @@
       }
     },
     "firewallSubnetCidr": {
-        "defaultValue": "10.179.128.0/26",
+        "defaultValue": "10.179.128.0/29",
         "type": "string",
         "metadata": {
           "description": "Cidr range for the firewall subnet.."
         }
       },
       "storageSubnetCidr": {
-        "defaultValue": "10.179.129.0/29",
+        "defaultValue": "10.179.129.0/26",
         "type": "string",
         "metadata": {
           "description": "Cidr range for the storage subnet.."

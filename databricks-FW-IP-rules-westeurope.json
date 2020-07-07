@@ -23,6 +23,13 @@
                 "description": "The name of existing virtual network of Databricks."
             }
         }
+       ,"databricksManagedStorageName": {
+            "defaultValue": "xxx",
+            "type": "string",
+            "metadata": {
+                "description": "The name of Databricks' managed storage - created with previous template."
+            }
+        }
        
     },
     "variables": {
@@ -227,7 +234,7 @@
                                     ],
                                     "fqdnTags": [],
                                     "targetFqdns": [
-                                        "xxx.blob.core.windows.net"
+                                        "[concat(parameters('databricksManagedStorageName'), '.blob.core.windows.net')]"
                                     ],
                                     "sourceAddresses": [
                                         "10.179.0.0/17"
