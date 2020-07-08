@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nsgName": {
+          "value": "databricks-nsg"
+        },
+        "vnetName": {
+          "value": "databricks-vnet"
+        },
+        "workspaceName": {
+            "value": "dbx-ent-demo"
+        },
+        "privateSubnetName": {
+          "value": "dataplane-subnet"
+        },
+        "publicSubnetName": {
+          "value": "controlplane-subnet"
+        },
+        "pricingTier": {
+          "value": "premium"
+        },
+        "location": {
+          "value": "westeurope"
+        },
+        "vnetCidr": {
+          "value": "10.179.0.0/16"
+        },
+        "privateSubnetCidr": {
+          "value": "10.179.0.0/18"
+        },
+        "publicSubnetCidr": {
+          "value": "10.179.64.0/18"
+        },
+        "firewallSubnetCidr": {
+            "value": "10.179.128.0/26"
+          },
+        "storageSubnetCidr": {
+            "value": "10.179.129.0/26"
+          },      
+        "resourceTags": {
+          "value": {
+              "Environment": "Dev",
+              "Project": "DEMO-FW"
+          }
+        },
+        "route-name": {
+            "value": "dbx-route"
+        }
+      }
+}
